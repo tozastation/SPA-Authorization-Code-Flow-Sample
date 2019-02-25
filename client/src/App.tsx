@@ -22,7 +22,7 @@ class App extends React.Component {
 
   private onClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.preventDefault();
-    window.location.href = 'http://localhost:8888/login';
+    window.location.href = 'http://127.0.0.1:8888/login';
     console.log('Clicked');
   }
 }

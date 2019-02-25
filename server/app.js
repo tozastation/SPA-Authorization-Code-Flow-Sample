@@ -13,9 +13,12 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = 'eb92af567b0d41fe81de25c2d10e4d53'; // Your client id
-var client_secret = 'c24d9d68fda548af875fa4b3b385fe0a'; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+console.log(process.env.CLIENT_ID);
+console.log(process.env.CLIENT_SECRET);
+
+var client_id = process.env.CLIENT_ID; //'eb92af567b0d41fe81de25c2d10e4d53'; // Spotifyで発行するID
+var client_secret = process.env.CLIENT_SECRET; // Spotifyで発行するシークレット
+var redirect_uri = 'http://127.0.0.1:8888/callback'; // このリダイレクト先は，Spotify Developerで設定するredirect url
 
 /**
  * Generates a random string containing numbers and letters
@@ -74,6 +77,7 @@ app.get('/callback', function(req, res) {
       }));
   } else {
     res.clearCookie(stateKey);
+    console.log(code);
     var authOptions = {
       url: 'https://accounts.spotify.com/api/token',
       form: {
@@ -92,6 +96,8 @@ app.get('/callback', function(req, res) {
 
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
+        
+        console.log(access_token);
 
         var options = {
           url: 'https://api.spotify.com/v1/me',
@@ -106,13 +112,13 @@ app.get('/callback', function(req, res) {
 
         res.cookie('Spotify_AccessToken', access_token, {maxAge: 900000, httpOnly: true});
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:3000/#' +
+        res.redirect('http://127.0.0.1:3000/#' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
       } else {
-        res.redirect('http://localhost:3000/#' +
+        res.redirect('http://127.0.0.1:3000/#' +
           querystring.stringify({
             error: 'invalid_token'
           }));
